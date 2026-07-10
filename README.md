@@ -12,6 +12,23 @@ npm run check
 npm test
 ```
 
+## Use the local course reader
+
+Start the course website from the repository root:
+
+```bash
+npm run course
+```
+
+Open the local URL printed by Vite (usually `http://localhost:5173`). The reader provides ordered lesson navigation, progress tracking, solution reveals, and read-only previews of the course files. Use the copy-path actions to open exercises in your preferred IDE; exercises are not edited or executed in the browser.
+
+To verify and preview the production build locally:
+
+```bash
+npm run course:build
+npm run course:preview
+```
+
 Work through the chapters in order. In each chapter:
 
 1. Read `README.md`.
@@ -49,4 +66,3 @@ The curriculum follows the official documentation's progression from the Effect 
 - [Effect documentation](https://effect.website/docs/)
 - [Installation](https://effect.website/docs/getting-started/installation/)
 - [Effect API reference](https://effect.website/docs/additional-resources/api-reference/)
-
