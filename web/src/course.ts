@@ -27,6 +27,12 @@ export interface CoursePage {
   readonly resourceGroups: ReadonlyArray<ResourceGroup>
 }
 
+export interface CourseSection {
+  readonly id: "course" | "lessons"
+  readonly label: string
+  readonly pages: ReadonlyArray<CoursePage>
+}
+
 const chapter = (
   number: string,
   slug: string,
@@ -60,9 +66,12 @@ const chapter = (
   }
 }
 
-export const coursePages: ReadonlyArray<CoursePage> = [
+const guidePages: ReadonlyArray<CoursePage> = [
   { id: "start", shortLabel: "Start", title: "Start here", kind: "guide", markdownPath: "README.md", resourceGroups: [] },
   { id: "overview", shortLabel: "Map", title: "Course overview", kind: "guide", markdownPath: "COURSE_MAP.md", resourceGroups: [] },
+]
+
+export const lessonPages: ReadonlyArray<CoursePage> = [
   chapter("01", "effect-model", "The Effect model", "60 min"),
   chapter("02", "composition", "Composition", "60 min"),
   chapter("03", "typed-errors", "Typed errors and resilience", "75 min"),
@@ -101,7 +110,12 @@ export const coursePages: ReadonlyArray<CoursePage> = [
   },
 ]
 
-export const lessonPages = coursePages.filter((page) => page.kind === "lesson")
+export const courseSections: ReadonlyArray<CourseSection> = [
+  { id: "course", label: "Course", pages: guidePages },
+  { id: "lessons", label: "Lessons", pages: lessonPages },
+]
+
+export const coursePages: ReadonlyArray<CoursePage> = courseSections.flatMap((section) => section.pages)
 
 export const pageById = new Map(coursePages.map((page) => [page.id, page]))
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { contentByPath } from "./content"
-import { coursePages, lessonPages } from "./course"
+import { coursePages, courseSections, lessonPages } from "./course"
 
 describe("course manifest", () => {
   it("contains the guides and all eight ordered lessons", () => {
@@ -17,6 +17,17 @@ describe("course manifest", () => {
       "08-capstone",
     ])
     expect(lessonPages).toHaveLength(8)
+  })
+
+  it("derives page order from explicit navigation sections", () => {
+    expect(courseSections.map(({ id, label }) => ({ id, label }))).toEqual([
+      { id: "course", label: "Course" },
+      { id: "lessons", label: "Lessons" },
+    ])
+    expect(courseSections[0]?.pages.every((page) => page.kind === "guide")).toBe(true)
+    expect(courseSections[1]?.pages).toEqual(lessonPages)
+    expect(courseSections.flatMap((section) => section.pages)).toEqual(coursePages)
+    expect(new Set(coursePages.map((page) => page.id)).size).toBe(coursePages.length)
   })
 
   it("references existing content and classifies every solution as a spoiler", () => {

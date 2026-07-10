@@ -3,7 +3,7 @@ import hljs from "highlight.js/lib/core"
 import bash from "highlight.js/lib/languages/bash"
 import typescript from "highlight.js/lib/languages/typescript"
 import { marked } from "marked"
-import { coursePages, findPageForResource, lessonPages, pageById, type CoursePage } from "./course"
+import { coursePages, courseSections, findPageForResource, lessonPages, pageById, type CoursePage } from "./course"
 import { getContent } from "./content"
 import { fileHash, pageHash, parseHash } from "./router"
 import { loadProgress, saveProgress, type LearnerProgress } from "./progress"
@@ -65,15 +65,17 @@ const renderNavigation = (activePageId: string): void => {
   `
 
   const navigation = document.querySelector<HTMLDivElement>(".course-navigation")!
-  navigation.innerHTML = coursePages.map((page, index) => {
-    const isComplete = completed.has(page.id)
-    const state = page.kind === "lesson" ? `<span class="nav-state" aria-label="${isComplete ? "Completed" : "Not completed"}">${isComplete ? "✓" : ""}</span>` : ""
-    const sectionLabel = index === 0 ? `<p class="nav-section">Course</p>` : index === 2 ? `<p class="nav-section">Lessons</p>` : ""
-    return `${sectionLabel}<a class="nav-link ${activePageId === page.id ? "active" : ""}" href="${pageHash(page.id)}">
-      <span class="nav-number">${escapeHtml(page.shortLabel)}</span>
-      <span class="nav-title">${escapeHtml(page.title)}</span>${state}
-    </a>`
-  }).join("")
+  navigation.innerHTML = courseSections.map((section) => `
+    <p class="nav-section">${escapeHtml(section.label)}</p>
+    ${section.pages.map((page) => {
+      const isComplete = completed.has(page.id)
+      const state = page.kind === "lesson" ? `<span class="nav-state" aria-label="${isComplete ? "Completed" : "Not completed"}">${isComplete ? "✓" : ""}</span>` : ""
+      return `<a class="nav-link ${activePageId === page.id ? "active" : ""}" href="${pageHash(page.id)}">
+        <span class="nav-number">${escapeHtml(page.shortLabel)}</span>
+        <span class="nav-title">${escapeHtml(page.title)}</span>${state}
+      </a>`
+    }).join("")}
+  `).join("")
 }
 
 const slugHeadings = (container: HTMLElement): Array<{ id: string; text: string; level: number }> => {
